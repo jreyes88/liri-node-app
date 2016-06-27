@@ -1,10 +1,27 @@
 var keyData = require('./keys.js');
 var Twitter = require('twitter');
 var spotify = require('spotify');
-var argumentOne = process.argv[2];
-var argumentTwo = process.argv[3];
+var action = process.argv[2];
+var searchParamater = "";
 
-// =========== Twitter ========== //
+console.log(action);
+
+// ===== Method to combine multiple word searches into one usable term ===== //
+for (var i = 3; i < process.argv.length; i++){
+
+    if (i  > 3 && i < process.argv.length){
+
+        searchParamater = searchParamater + "+" + process.argv[i];
+
+    }
+
+    else {
+
+        searchParamater = searchParamater + process.argv[i];
+    }
+}
+
+// ===== Twitter ===== //
 
 function myTweets() {
 	var client = new Twitter({
@@ -29,54 +46,35 @@ function myTweets() {
 	});
 }
 
-// ========== Spotify ========== //
+// ===== Spotify ===== //
 
 function spotifyThisSong() {
-	var spotifySong = 'whats+my+age+again';
-    // html validation using regex
-    var htmlProofThatSong = function(argument) {
-        if (argument == null) {
-            spotifySong = 'whats+my+age+again';
-            return spotifySong;
+
+    spotify.search({ type: 'track', query: searchParamater }, function(err, data) {
+        if ( err ) {
+            console.log('Error occurred: ' + err);
+            return;
         } else {
-            spotifySong = argument.replace(/-/g, '+');
-            return spotifySong;
+            // console.log(data);
+            console.log(JSON.parse(body)["artists.name"])
         }
-    };
-    htmlProofThatSong(argument);
-
-    request.post(authOptions, function(error, response, body) {
-        if (!error && response.statusCode === 200) {
-
-            // use the access token to access the Spotify Web API
-            var token = body.access_token;
-            var options = {
-                url: 'https://api.spotify.com/v1/search?q=' + spotifySong + '&type=track&limit=1',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    Accept: 'application/json'
-                },
-                json: true
-            };
-            //returns Spotify information
-            request.get(options, function(error, response, body) {
-                var returnItems = (body.tracks.items[0].artists[0].name + '\n' + body.tracks.items[0].name + '\n' + body.tracks.items[0].external_urls.spotify + '\n' + body.tracks.items[0].album.name);
-                console.log(returnItems);
-                fs.appendFile('files/log.txt', returnItems, 'utf-8', function(error) {
-                    if (error) {
-                        throw error
-                    };
-                })
-            });
-        }
+     
     });
-};
-
-if (argumentOne == 'my-tweets') {
-	myTweets();
 }
 
-if (argumentOne == 'spotify-this-song') {
-	console.log("Spotify is a go")
-	spotifyThisSong();
+// ========== Switch Case ========== //
+switch (action) {
+    case 'my-tweets':
+        myTweets();
+        break;
+    case 'spotify-this-song':
+        spotifyThisSong();
+        break;
 }
+//     case 'movie-this':
+//         movieThis();
+//         break;
+// ​
+//     case 'do-what-it-says':
+//         doWhatItSays();
+//         break;
