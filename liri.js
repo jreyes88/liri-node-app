@@ -55,8 +55,10 @@ function spotifyThisSong() {
             console.log('Error occurred: ' + err);
             return;
         } else {
-            // console.log(data);
-            console.log(data.tracks.items[0].album.name);
+            console.log("Artist Name: " + data.tracks.items[0].artists[0].name);
+            console.log("Song Name: " + data.tracks.items[0].name);
+            console.log("Album Name: " + data.tracks.items[0].album.name);
+            console.log("Preview Here: " + data.tracks.items[0].preview_url);
         }
      
     });
