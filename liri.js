@@ -56,7 +56,7 @@ function spotifyThisSong() {
             return;
         } else {
             // console.log(data);
-            console.log(JSON.parse(body)["artists.name"])
+            console.log(data.tracks.items[0].album.name);
         }
      
     });
