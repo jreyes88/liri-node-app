@@ -50,7 +50,12 @@ function myTweets() {
 
 function spotifyThisSong() {
 
+    if (searchParamater == "") {
+        searchParamater = "What's My Name Again?";
+    };
+
     spotify.search({ type: 'track', query: searchParamater }, function(err, data) {
+
         if ( err ) {
             console.log('Error occurred: ' + err);
             return;
@@ -62,9 +67,9 @@ function spotifyThisSong() {
         }
      
     });
-}
+};
 
-// ========== Switch Case ========== //
+// ===== Switch Case ===== //
 switch (action) {
     case 'my-tweets':
         myTweets();
