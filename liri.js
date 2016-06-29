@@ -1,6 +1,7 @@
 var keyData = require('./keys.js');
 var Twitter = require('twitter');
 var spotify = require('spotify');
+var request = require('request');
 var action = process.argv[2];
 var searchParamater = "";
 
@@ -69,6 +70,29 @@ function spotifyThisSong() {
     });
 };
 
+// ===== OMDB (Yeah You Know Me) ===== //
+function movieThis() {
+    if (searchParamater == "") {
+        searchParamater = "Mr. Nobody";
+    };
+
+    var queryUrl = 'http://www.omdbapi.com/?t=' + searchParamater +'&y=&plot=short&r=json';
+
+    request(queryUrl, function(error, response, body) {
+
+        if (!error && response.statusCode == 200) {
+
+            console.log("Title: " + JSON.parse(body)["Title"]);
+            console.log("Year: " + JSON.parse(body)["Year"]);
+            console.log("IMDB Rating: " + JSON.parse(body)["imdbRating"]);
+            console.log("Country: " + JSON.parse(body)["Country"]);
+            console.log("Language: " + JSON.parse(body)["Language"]);
+            console.log("Plot: " + JSON.parse(body)["Plot"]);
+            console.log("Actors: " + JSON.parse(body)["Actors"]);
+        }
+    });
+};
+
 // ===== Switch Case ===== //
 switch (action) {
     case 'my-tweets':
@@ -77,10 +101,10 @@ switch (action) {
     case 'spotify-this-song':
         spotifyThisSong();
         break;
+    case 'movie-this':
+        movieThis();
+        break;
 }
-//     case 'movie-this':
-//         movieThis();
-//         break;
 // ​
 //     case 'do-what-it-says':
 //         doWhatItSays();
