@@ -2,10 +2,9 @@ var keyData = require('./keys.js');
 var Twitter = require('twitter');
 var spotify = require('spotify');
 var request = require('request');
+var fs = require('fs');
 var action = process.argv[2];
 var searchParamater = "";
-
-console.log(action);
 
 // ===== Method to combine multiple word searches into one usable term ===== //
 for (var i = 3; i < process.argv.length; i++){
@@ -23,7 +22,6 @@ for (var i = 3; i < process.argv.length; i++){
 }
 
 // ===== Twitter ===== //
-
 function myTweets() {
 	var client = new Twitter({
 		consumer_key: keyData.twitterKeys.consumer_key,
@@ -48,11 +46,10 @@ function myTweets() {
 }
 
 // ===== Spotify ===== //
-
 function spotifyThisSong() {
 
     if (searchParamater == "") {
-        searchParamater = "What's My Name Again?";
+        searchParamater = "What's My Age Again?";
     };
 
     spotify.search({ type: 'track', query: searchParamater }, function(err, data) {
@@ -93,6 +90,47 @@ function movieThis() {
     });
 };
 
+// ===== Do What It Says ===== //
+function doWhatItSays() {
+    fs.readFile("random.txt", "utf8", function(error, data) {
+
+    // We will then print the contents of data
+
+    // Then split it by commas (to make it more readable)
+    var dataArr = data.split(',');
+
+        action = dataArr[0];
+        console.log(action);
+        for (var i = 1; i < dataArr.length; i++){
+
+            if (i  > 1 && i < dataArr.length){
+
+                searchParamater = searchParamater + "+" + dataArr[i];
+
+            }
+
+            else {
+
+                searchParamater = searchParamater + dataArr[i];
+            };
+        };
+        switch (action) {
+            case 'my-tweets':
+                myTweets();
+                break;
+            case 'spotify-this-song':
+                spotifyThisSong();
+                break;
+            case 'movie-this':
+                movieThis();
+                break;
+            case 'do-what-it-says':
+                doWhatItSays();
+                break;
+        };
+    });
+};
+
 // ===== Switch Case ===== //
 switch (action) {
     case 'my-tweets':
@@ -104,8 +142,7 @@ switch (action) {
     case 'movie-this':
         movieThis();
         break;
-}
-// ​
-//     case 'do-what-it-says':
-//         doWhatItSays();
-//         break;
+    case 'do-what-it-says':
+        doWhatItSays();
+        break;
+}   
